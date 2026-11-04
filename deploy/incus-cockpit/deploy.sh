@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Déploie Incus + LXC + Cockpit (module console) sur un serveur via SSH.
 #
-#   ./deploy.sh                       # cible par défaut : incus@192.168.1.17
-#   ./deploy.sh outscale@192.168.1.17 # autre utilisateur
+#   ./deploy.sh                       # cible par défaut : seb@192.168.1.17
+#   ./deploy.sh root@192.168.1.17     # autre utilisateur
 #   ./deploy.sh incus                 # alias défini dans ~/.ssh/config
-#   ./deploy.sh incus@192.168.1.17 admin   # ajoute « admin » au groupe incus-admin
+#   ./deploy.sh seb@192.168.1.17 admin   # ajoute « admin » au groupe incus-admin
 #
 # Options SSH supplémentaires : SSH_OPTS="-i ~/.ssh/ma_cle.rsa -p 2222" ./deploy.sh
 set -euo pipefail
 
-TARGET="${1:-incus@192.168.1.17}"
+TARGET="${1:-seb@192.168.1.17}"
 ADMIN_USER="${2:-}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

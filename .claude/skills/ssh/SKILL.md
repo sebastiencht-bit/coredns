@@ -1,6 +1,6 @@
 ---
 name: ssh
-description: Se connecter en SSH au serveur Incus/LXC (par défaut incus@192.168.1.17) pour y exécuter des commandes, diagnostiquer, déployer le kit deploy/incus-cockpit (Incus + LXC + Cockpit avec console) ou gérer des conteneurs et VM. À utiliser dès que l'utilisateur parle de « ssh », du serveur incus, de 192.168.1.17, de Cockpit, de conteneurs LXC/Incus distants, ou demande d'agir « sur le serveur ».
+description: Se connecter en SSH au serveur Incus/LXC (par défaut seb@192.168.1.17) pour y exécuter des commandes, diagnostiquer, déployer le kit deploy/incus-cockpit (Incus + LXC + Cockpit avec console) ou gérer des conteneurs et VM. À utiliser dès que l'utilisateur parle de « ssh », du serveur incus, de 192.168.1.17, de Cockpit, de conteneurs LXC/Incus distants, ou demande d'agir « sur le serveur ».
 ---
 
 # SSH vers le serveur Incus
@@ -20,7 +20,7 @@ $R deploy                     # installe/met à jour le kit deploy/incus-cockpit
 $R close                      # ferme la connexion partagée
 ```
 
-Cible : `-t user@hôte` ou variable `INCUS_SSH_TARGET` (défaut `incus@192.168.1.17`).
+Cible : `-t user@hôte` ou variable `INCUS_SSH_TARGET` (défaut `seb@192.168.1.17`).
 Options SSH en plus (clé, port…) : `INCUS_SSH_OPTS="-i ~/.ssh/cle -p 2222"`.
 Les alias de `~/.ssh/config` fonctionnent (`-t incus`).
 

@@ -13,10 +13,10 @@ Depuis votre poste, qui doit joindre `192.168.1.17` en SSH :
 
 ```bash
 cd deploy/incus-cockpit
-./deploy.sh                          # cible par défaut : incus@192.168.1.17
-./deploy.sh outscale@192.168.1.17    # autre utilisateur SSH
+./deploy.sh                          # cible par défaut : seb@192.168.1.17
+./deploy.sh root@192.168.1.17        # autre utilisateur SSH
 ./deploy.sh incus                    # alias « Host incus » de ~/.ssh/config
-SSH_OPTS="-i ~/.ssh/ma_cle.rsa" ./deploy.sh incus@192.168.1.17
+SSH_OPTS="-i ~/.ssh/ma_cle.rsa" ./deploy.sh seb@192.168.1.17
 ```
 
 `deploy.sh` copie le kit sur le serveur, puis lance `install.sh` avec `sudo`.
@@ -25,8 +25,8 @@ SSH_OPTS="-i ~/.ssh/ma_cle.rsa" ./deploy.sh incus@192.168.1.17
 Pour une installation manuelle sur le serveur :
 
 ```bash
-scp -r deploy/incus-cockpit incus@192.168.1.17:
-ssh -t incus@192.168.1.17 'sudo bash incus-cockpit/install.sh'
+scp -r deploy/incus-cockpit seb@192.168.1.17:
+ssh -t seb@192.168.1.17 'sudo bash incus-cockpit/install.sh'
 ```
 
 Systèmes pris en charge : Debian 11, 12 et 13, Ubuntu 22.04 et 24.04, et Fedora.
@@ -44,7 +44,7 @@ modifie le réseau de la VM Outscale.
 - Sans ouvrir de port, par tunnel SSH :
 
   ```bash
-  ssh -L 9090:localhost:9090 incus@192.168.1.17
+  ssh -L 9090:localhost:9090 seb@192.168.1.17
   # puis https://localhost:9090 dans le navigateur
   ```
 

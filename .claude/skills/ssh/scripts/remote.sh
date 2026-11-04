@@ -2,7 +2,7 @@
 # Accès SSH non interactif au serveur Incus/LXC. Voir ../SKILL.md.
 set -uo pipefail
 
-TARGET="${INCUS_SSH_TARGET:-incus@192.168.1.17}"
+TARGET="${INCUS_SSH_TARGET:-seb@192.168.1.17}"
 if [ "${1:-}" = "-t" ]; then TARGET="${2:?cible manquante après -t}"; shift 2; fi
 CMD="${1:-help}"; [ $# -gt 0 ] && shift
 
