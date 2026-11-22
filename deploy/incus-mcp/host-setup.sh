@@ -61,7 +61,7 @@ run incus project set "$PROJECT" restricted.networks.access="$NETWORK"
 # --- 2. Incus API on loopback --------------------------------------------------------------------
 CURRENT="$(incus config get core.https_address 2>/dev/null || true)"
 if [ -z "$CURRENT" ]; then
-    run incus config set core.https_address "$HTTPS_ADDR"
+    run incus config set core.https_address="$HTTPS_ADDR"
     API_PORT="${HTTPS_ADDR##*:}"
 else
     API_PORT="${CURRENT##*:}"; API_PORT="${API_PORT:-8443}"

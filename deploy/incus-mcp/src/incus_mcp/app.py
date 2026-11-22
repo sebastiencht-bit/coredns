@@ -272,20 +272,32 @@ async def self_check(cfg: Config) -> int:
     finally:
         await client.aclose()
     leaks = []
+    probes = (
+        ("project 'default'", "/1.0/instances", {"project": "default", "recursion": "1"}),
+        ("no project (the server default)", "/1.0/instances", {"recursion": "1"}),
+        ("project 'default' itself", "/1.0/projects/default", {}),
+    )
     async with httpx.AsyncClient(base_url=cfg.incus_url, verify=tls_context(cfg), timeout=15) as http:
-        for probe in ("default", None):
-            params = {"project": probe} if probe else {}
-            label = f"project {probe!r}" if probe else "no project (the server default)"
+        for label, path, params in probes:
             try:
-                r = await http.get("/1.0/instances", params=params)
+                r = await http.get(path, params=params)
             except (httpx.HTTPError, OSError) as exc:
                 print(f"FAIL  cannot probe {label}: {exc}")
                 return 1
-            if r.status_code < 400:
+            readable = r.status_code < 400
+            if readable and path == "/1.0/instances":
+                # Incus 7 answers list calls on a forbidden project with 200 and a FILTERED list, not 403:
+                # only instances of another project prove a leak.
+                try:
+                    items = r.json().get("metadata") or []
+                except ValueError:
+                    items = []
+                readable = any(not isinstance(i, dict) or i.get("project") != cfg.project for i in items)
+            if readable:
                 leaks.append(label)
                 print(f"FAIL  {label} is READABLE: the certificate is not restricted")
             else:
-                print(f"OK    {label} refused ({r.status_code})")
+                print(f"OK    {label} refused ({r.status_code}{', filtered' if r.status_code < 400 else ''})")
     return 1 if leaks else 0
 
 

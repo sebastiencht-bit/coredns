@@ -28,9 +28,12 @@ def make_cert(directory, name, cn):
 
 class Handler(BaseHTTPRequestHandler):
     restricted = True  # like a certificate added with --restricted --projects timon
+    filtered = False  # Incus 7: list calls on a forbidden project answer 200 with an empty list
 
     def do_GET(self):  # noqa: N802
-        if self.restricted and "project=timon" not in self.path:
+        if self.restricted and self.filtered and self.path.startswith("/1.0/instances") and "project=timon" not in self.path:
+            status, data = 200, {"type": "sync", "status_code": 200, "metadata": []}
+        elif self.restricted and "project=timon" not in self.path:
             status, data = 403, {"type": "error", "error": "Certificate is restricted", "error_code": 403}
         else:
             status, data = 200, {"type": "sync", "status_code": 200, "metadata": [{"name": "c1", "status": "Running"}]}
@@ -108,3 +111,14 @@ async def test_self_check_passes_only_when_restricted(incus_like, capsys):
         assert "is READABLE" in capsys.readouterr().out
     finally:
         Handler.restricted = True
+
+
+async def test_self_check_accepts_incus7_filtered_lists(incus_like, capsys):
+    url, server_crt, client_crt, client_key, _ = incus_like
+    Handler.filtered = True
+    try:
+        assert await self_check(cfg_for(url, server_crt, client_crt, client_key)) == 0
+        out = capsys.readouterr().out
+        assert "FAIL" not in out and "filtered" in out
+    finally:
+        Handler.filtered = False
