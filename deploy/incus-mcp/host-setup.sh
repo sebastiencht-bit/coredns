@@ -18,6 +18,8 @@ PROJECT="${PROJECT:-timon}"
 LIMIT_INSTANCES="${LIMIT_INSTANCES:-10}"
 LIMIT_CPU="${LIMIT_CPU:-16}"
 LIMIT_MEMORY="${LIMIT_MEMORY:-32GiB}"
+DEFAULT_CPU="${DEFAULT_CPU:-1}"          # per-instance defaults (project profile), required by the quotas above
+DEFAULT_MEMORY="${DEFAULT_MEMORY:-2GiB}"
 HTTPS_ADDR="${HTTPS_ADDR:-127.0.0.1:8443}"
 STORAGE_POOL="${STORAGE_POOL:-}"     # default: the pool of the default profile's root disk
 NETWORK="${NETWORK:-}"               # default: the first managed bridge
@@ -54,6 +56,12 @@ fi
 profile_has() { incus profile device show default --project "$PROJECT" 2>/dev/null | grep -q "^$1:"; }
 profile_has root || run incus profile device add default root disk path=/ pool="$STORAGE_POOL" --project "$PROJECT"
 profile_has eth0 || run incus profile device add default eth0 nic network="$NETWORK" name=eth0 --project "$PROJECT"
+# With limits.cpu/limits.memory on the project, Incus refuses any instance that does not set them itself
+# ("has no limits.cpu config, either directly or via a profile"): give the project's profile defaults.
+for kv in limits.cpu="$DEFAULT_CPU" limits.memory="$DEFAULT_MEMORY"; do
+    [ -n "$(incus profile get default "${kv%%=*}" --project "$PROJECT" 2>/dev/null || true)" ] \
+        || run incus profile set default "$kv" --project "$PROJECT"
+done
 # restricted=true blocks privileged containers, raw.* keys, host paths and other ways out of the project.
 # A restricted project still needs permission to use the host's managed networks:
 run incus project set "$PROJECT" restricted.networks.access="$NETWORK"

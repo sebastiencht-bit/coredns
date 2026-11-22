@@ -49,10 +49,11 @@ sudo ./host-setup.sh --yes    # applique
 ```
 
 Variables : `CONTAINER` (`cockpit`), `PROJECT` (`timon`), `LIMIT_INSTANCES`, `LIMIT_CPU`,
-`LIMIT_MEMORY`, `HTTPS_ADDR` (`127.0.0.1:8443`), `STORAGE_POOL`, `NETWORK`.
+`LIMIT_MEMORY`, `DEFAULT_CPU` (`1`) et `DEFAULT_MEMORY` (`2GiB`), valeurs par défaut de chaque instance, exigées par les quotas,
+`HTTPS_ADDR` (`127.0.0.1:8443`), `STORAGE_POOL`, `NETWORK`.
 
 Le script :
-1. crée le projet ;
+1. crée le projet et donne à son profil `default` un disque, une carte réseau et des limites par défaut ;
 2. fait écouter l'API Incus sur la boucle locale, **seulement si aucune adresse n'est déjà configurée** ;
 3. ajoute le périphérique proxy ;
 4. installe le service dans le conteneur ;
