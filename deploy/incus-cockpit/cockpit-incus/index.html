@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Incus &amp; LXC</title>
+    <link rel="stylesheet" href="vendor/xterm.css">
+    <link rel="stylesheet" href="incus.css">
+    <script src="../base1/cockpit.js"></script>
+    <script src="vendor/xterm.js"></script>
+    <script src="vendor/addon-fit.js"></script>
+    <script src="incus.js" defer></script>
+</head>
+<body>
+    <header class="top">
+        <h1>Incus &amp; LXC</h1>
+        <button type="button" id="refresh" class="btn">Actualiser</button>
+    </header>
+
+    <div id="admin-hint" class="notice" hidden>
+        Accès limité : activez l'<strong>accès administrateur</strong> (bouton en haut à droite de Cockpit)
+        pour gérer les conteneurs LXC et toutes les instances Incus.
+    </div>
+
+    <section class="card" id="incus-card">
+        <div class="card-head">
+            <h2>Incus</h2>
+            <span class="muted" id="incus-version"></span>
+        </div>
+        <form id="incus-create" class="create">
+            <label>Nom <input name="name" required pattern="[A-Za-z][A-Za-z0-9\-]{0,62}" placeholder="web1"></label>
+            <label>Image <input name="image" required value="images:debian/12"></label>
+            <label class="check"><input type="checkbox" name="vm"> Machine virtuelle</label>
+            <button type="submit" class="btn primary">Créer</button>
+        </form>
+        <div class="msg" id="incus-msg" role="status"></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Nom</th><th>État</th><th>Type</th><th>IPv4</th><th>Image</th><th class="actions-col">Actions</th></tr></thead>
+                <tbody id="incus-list"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card" id="lxc-card">
+        <div class="card-head">
+            <h2>LXC</h2>
+            <span class="muted" id="lxc-version"></span>
+        </div>
+        <form id="lxc-create" class="create">
+            <label>Nom <input name="name" required pattern="[A-Za-z][A-Za-z0-9\-]{0,62}" placeholder="ct1"></label>
+            <label>Distribution <input name="dist" required value="debian" size="10"></label>
+            <label>Version <input name="release" required value="bookworm" size="10"></label>
+            <label>Arch <input name="arch" required value="amd64" size="7"></label>
+            <button type="submit" class="btn primary">Créer</button>
+        </form>
+        <div class="msg" id="lxc-msg" role="status"></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Nom</th><th>État</th><th>IPv4</th><th>Démarrage auto</th><th class="actions-col">Actions</th></tr></thead>
+                <tbody id="lxc-list"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card term-card" id="term-panel" hidden>
+        <div class="card-head">
+            <h2 id="term-title">Console</h2>
+            <span class="muted" id="term-hint"></span>
+            <button type="button" id="term-close" class="btn">Fermer</button>
+        </div>
+        <div id="term"></div>
+    </section>
+</body>
+</html>
